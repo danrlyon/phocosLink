@@ -56,6 +56,7 @@ public class CXNsolidDataDecryptor {
     private int lvdVoltageDependentDC;
     private int lvdVoltageDependentAC;
     private int lvdMode;
+    private int systemVoltage = 12;
     
     CXCom cxCom;
     
@@ -221,10 +222,10 @@ public class CXNsolidDataDecryptor {
             //Load min voltage
             this.dayData[i][3] = Integer.parseInt("000000"
                     +splitDataLogger[148+(i*19)], 16);
-            this.dayDecoded[i][3] = Float.toString((float) (this.dayData[i][3]*0.1));
             //Load AHin
             this.dayData[i][4] = Integer.parseInt("0000"+splitDataLogger[149+(i*19)]
                     +splitDataLogger[150+(i*19)], 16);
+            this.dayDecoded[i][3] = Float.toString((float) (this.dayData[i][3]*0.1));                    
             this.dayDecoded[i][4] = Float.toString((float) (this.dayData[i][4]*0.1));
             //Load AHout
             this.dayData[i][5] = Integer.parseInt("0000"+splitDataLogger[151+(i*19)]
@@ -266,39 +267,88 @@ public class CXNsolidDataDecryptor {
             this.dayData[i][14] = Integer.parseInt("0000"+splitDataLogger[161+(i*19)]
                     +splitDataLogger[162+(i*19)], 16); 
             this.dayDecoded[i][14] = Integer.toBinaryString(this.dayData[i][14]);
+            /*If manual system voltage is required, uncomment and test below, and add to month data*/
+//            if((1024&this.dayData[i][14])==1024)   {
+//                this.dayDecoded[i][2] = String.valueOf(Integer.parseInt(this.dayDecoded[i][2])*24);
+//                this.dayDecoded[i][3] = String.valueOf(Integer.parseInt(this.dayDecoded[i][2])*24);
+//                
+//            }
         }
-        //Monthly Datalogger values to be decyphered.
+        //Monthly Datalogger values be decyphered
         for ( i=0;i<24;i++ )    {
-            this.monthData[i][0] = Integer.parseInt("0000"+splitDataLogger[733+(i*19)]
-                    +splitDataLogger[734+(i*19)], 16);
+            //Loads Date into monthDecoded string array
+            this.monthData[i][0] = Integer.parseInt("0000"+splitDataLogger[144+(i*19)]
+                    +splitDataLogger[145+(i*19)], 16);
+            this.currentYear = (byte) (this.monthData[i][0]&127);
+            this.currentMonth = (byte) ((this.monthData[i][0]>>7)&15);
+            this.currentDay = (byte) ((this.monthData[i][0]>>11&31));
+            this.monthDecoded[i][0]= ("20"+Byte.toString(this.currentYear)+"-"
+                    +Byte.toString(this.currentMonth)+"-"
+                    +Byte.toString(this.currentDay));
+            System.out.println(this.monthDecoded[i][0]);
+            //Loads Inverter factor into monthDecoded
+            //multiply this by inverter power to get Watthours
             this.monthData[i][1] = Integer.parseInt("000000"
-                    +splitDataLogger[735+(i*19)], 16);
+                    +splitDataLogger[146+(i*19)], 16);
+            this.monthDecoded[i][1] = Float.toString((float) ((this.monthData[i][1])*0.1));
+            //Load Max Voltage
             this.monthData[i][2] = Integer.parseInt("000000"
-                    +splitDataLogger[736+(i*19)], 16);
+                    +splitDataLogger[147+(i*19)], 16);
+            this.monthDecoded[i][2] = Float.toString((float) (this.monthData[i][2]*0.1));
+            //Load min voltage
             this.monthData[i][3] = Integer.parseInt("000000"
-                    +splitDataLogger[737+(i*19)], 16);
-            this.monthData[i][4] = Integer.parseInt("0000"+splitDataLogger[738+(i*19)]
-                    +splitDataLogger[739+(i*19)], 16);
-            this.monthData[i][5] = Integer.parseInt("0000"+splitDataLogger[740+(i*19)]
-                    +splitDataLogger[741+(i*19)], 16);
+                    +splitDataLogger[148+(i*19)], 16);
+            //Load AHin
+            this.monthData[i][4] = Integer.parseInt("0000"+splitDataLogger[149+(i*19)]
+                    +splitDataLogger[150+(i*19)], 16);
+            this.monthDecoded[i][3] = Float.toString((float) (this.monthData[i][3]*0.1));                    
+            this.monthDecoded[i][4] = Float.toString((float) (this.monthData[i][4]*0.1));
+            //Load AHout
+            this.monthData[i][5] = Integer.parseInt("0000"+splitDataLogger[151+(i*19)]
+                    +splitDataLogger[152+(i*19)], 16);
+            this.monthDecoded[i][5] = Float.toString((float) (this.monthData[i][5]*0.1));
+            //Load Max PV voltage
             this.monthData[i][6] = Integer.parseInt("000000"
-                    +splitDataLogger[742+(i*19)], 16);
+                    +splitDataLogger[153+(i*19)], 16);
+            this.monthDecoded[i][6] = Float.toString((float) (this.monthData[i][6]*0.5));
+            //Load Min PV voltage
             this.monthData[i][7] = Integer.parseInt("000000"
-                    +splitDataLogger[743+(i*19)], 16);
+                    +splitDataLogger[154+(i*19)], 16);
+            this.monthDecoded[i][7] = Float.toString((float) (this.monthData[i][7]*0.5));
+            //Load max load current
             this.monthData[i][8] = Integer.parseInt("000000"
-                    +splitDataLogger[744+(i*19)], 16);
+                    +splitDataLogger[155+(i*19)], 16);
+            this.monthDecoded[i][8] = Float.toString((float) (this.monthData[i][8]*0.5));
+            //Load max charge current
             this.monthData[i][9] = Integer.parseInt("000000"
-                    +splitDataLogger[745]+(i*19), 16);
+                    +splitDataLogger[156+(i*19)], 16);
+            this.monthDecoded[i][9] = Float.toString((float) (this.monthData[i][9]*0.5));
+            //Load morning SOC percent
             this.monthData[i][10] = Integer.parseInt("000000"
-                    +splitDataLogger[746+(i*19)], 16);
+                    +splitDataLogger[157+(i*19)], 16);
+            this.monthDecoded[i][10] = (Float.toString((float) (this.monthData[i][10]*6.6))+"%");
+            //Load external temperature max
             this.monthData[i][11] = Integer.parseInt("000000"
-                    +splitDataLogger[747+(i*19)], 16);
+                    +splitDataLogger[158+(i*19)], 16);
+            this.monthDecoded[i][11] = (Byte.toString((byte) (this.monthData[i][11]))+"°C");            
+            //Load external temperature min
             this.monthData[i][12] = Integer.parseInt("000000"
-                    +splitDataLogger[748+(i*19)], 16);
+                    +splitDataLogger[159+(i*19)], 16);
+            this.monthDecoded[i][12] = (Byte.toString((byte) (this.monthData[i][12]))+"°C");            
+            //Load nightlength in minutes
             this.monthData[i][13] = Integer.parseInt("000000"
-                    +splitDataLogger[749+(i*19)], 16);
-            this.monthData[i][14] = Integer.parseInt("0000"+splitDataLogger[750+(i*19)]
-                    +splitDataLogger[751+(i*19)], 16);            
+                    +splitDataLogger[160+(i*19)], 16);
+            this.monthDecoded[i][13] = (Integer.toString(this.monthData[i][13]*6)+" Minutes");
+            //
+            this.monthData[i][14] = Integer.parseInt("0000"+splitDataLogger[161+(i*19)]
+                    +splitDataLogger[162+(i*19)], 16); 
+            this.monthDecoded[i][14] = Integer.toBinaryString(this.monthData[i][14]);
+            /*If manual system voltage is required, uncomment and test below, and add to month data*/
+//            if((1024&this.monthData[i][14])==1024)   {
+//                this.monthDecoded[i][2] = String.valueOf(Integer.parseInt(this.monthDecoded[i][2])*24);
+//                this.monthDecoded[i][3] = String.valueOf(Integer.parseInt(this.monthDecoded[i][2])*24);
+//                
+//            }
         }
         //Decypher settings
         

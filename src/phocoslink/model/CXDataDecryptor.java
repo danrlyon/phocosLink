@@ -144,9 +144,6 @@ public class CXDataDecryptor {
     
     public void decryptDataLogger() {
         //Parse and store data in a readable format
-        
-        //
-         
         String replace = this.cxDataLogger.replace("!", " ");
         String trim = replace.trim();
         String[] splitDataLogger = trim.split(" ");        
