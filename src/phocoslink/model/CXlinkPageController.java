@@ -5,20 +5,34 @@
  */
 package phocoslink.model;
 
+//import phocoslink.*;
+//import cxlinkdev.model.CXCom;
+//import cxlinkdev.model.PhocosLink;
 import static phocoslink.model.PhocosLink.controllerType;
 import static phocoslink.model.PhocosLink.selectedPort;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.stage.Stage;
+
+
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 
@@ -28,7 +42,7 @@ import jssc.SerialPortList;
  *
  * @author Dell-N7110
  */
-public class IntroPageController implements Initializable, ControlledScreen {
+public class CXlinkPageController implements Initializable, ControlledScreen {
     
     ScreensController myController;
     private String connectedPortName;
