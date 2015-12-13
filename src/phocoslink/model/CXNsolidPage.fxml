@@ -14,6 +14,22 @@
 
 <FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="971.0" stylesheets="@StyleSheet_CXlink.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="phocoslink.model.CXNsolidPageController">
    <children>
+      <MenuButton maxHeight="60.0" maxWidth="60.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0">
+        <items>
+          <MenuItem mnemonicParsing="false" onAction="#refreshCurrentValues" text="Refresh Values" />
+          <MenuItem mnemonicParsing="false" onAction="#handleMainMenuSelect" text="Main Menu" />
+        </items>
+         <FlowPane.margin>
+            <Insets left="90.0" top="25.0" />
+         </FlowPane.margin>
+         <padding>
+            <Insets right="20.0" top="30.0" />
+         </padding>
+      </MenuButton>
+      <Pane prefHeight="87.0" prefWidth="504.0">
+         <FlowPane.margin>
+            <Insets />
+         </FlowPane.margin></Pane>
       <ImageView fitHeight="67.0" fitWidth="201.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/PhocosLogo.png" />
@@ -22,22 +38,6 @@
             <Insets left="20.0" top="20.0" />
          </FlowPane.margin>
       </ImageView>
-      <Pane prefHeight="86.0" prefWidth="685.0">
-         <FlowPane.margin>
-            <Insets />
-         </FlowPane.margin></Pane>
-      <MenuButton maxHeight="60.0" maxWidth="60.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" onAction="#handleMainMenuSelect" text="Main Menu" />
-        </items>
-         <FlowPane.margin>
-            <Insets top="25.0" />
-         </FlowPane.margin>
-         <padding>
-            <Insets right="20.0" top="30.0" />
-         </padding>
-      </MenuButton>
       <VBox prefHeight="450.0" prefWidth="210.0">
          <FlowPane.margin>
             <Insets left="20.0" top="30.0" />
@@ -244,14 +244,14 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <TextField fx:id="currentBatteryVoltage" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" />
-                              <TextField id="currentStageOfCharge" fx:id="currentStateOfCharge" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField id="currentChargeCurrent" fx:id="currentChargeCurrent" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField id="currentLoadCurrent" fx:id="currentLoadCurrent" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField id="currentTodaysEnergy" fx:id="currentTodaysEnergy" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField id="currentBatteryChargingState" fx:id="currentBatteryChargingState" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField id="currentLoadState" fx:id="currentLoadState" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <TextField id="currentTemperature" fx:id="currentTemperature" alignment="CENTER_RIGHT" editable="false" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <TextField fx:id="currentBatteryVoltage" alignment="CENTER" editable="false" GridPane.columnIndex="1" />
+                              <TextField id="currentStageOfCharge" fx:id="currentStateOfCharge" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField id="currentChargeCurrent" fx:id="currentChargeCurrent" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField id="currentLoadCurrent" fx:id="currentLoadCurrent" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField id="currentTodaysEnergy" fx:id="currentTodaysEnergy" alignment="CENTER_RIGHT" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <TextField id="currentBatteryChargingState" fx:id="currentBatteryChargingState" alignment="CENTER_RIGHT" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <TextField id="currentLoadState" fx:id="currentLoadState" alignment="CENTER_RIGHT" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField id="currentTemperature" fx:id="currentTemperature" alignment="CENTER_RIGHT" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                               <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="17.0" prefWidth="160.0" text="Battery Voltage " textAlignment="CENTER" />
                               <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="10.0" layoutY="18.0" prefHeight="17.0" prefWidth="160.0" text="State of Charge " textAlignment="CENTER" GridPane.rowIndex="1" />
                               <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="10.0" layoutY="18.0" prefHeight="17.0" prefWidth="160.0" text="Charge Current " textAlignment="CENTER" GridPane.rowIndex="2" />
@@ -317,6 +317,13 @@
                   </StackPane>
                </center>
             </BorderPane>
+            <AnchorPane fx:id="initialScreenAnchorPane" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="initialConnectButton" layoutX="310.0" layoutY="140.0" mnemonicParsing="false" onAction="#handleInitialConnectSelect" prefHeight="100.0" prefWidth="100.0" text="Connect to CXNsolid" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+                  <ProgressBar fx:id="progressbar" layoutX="182.0" layoutY="322.0" prefHeight="24.0" prefWidth="360.0" progress="0.0" />
+                  <Label fx:id="connectionStatusLabel" layoutX="346.0" layoutY="354.0" textAlignment="CENTER" />
+               </children>
+            </AnchorPane>
          </children>
          <FlowPane.margin>
             <Insets top="30.0" />

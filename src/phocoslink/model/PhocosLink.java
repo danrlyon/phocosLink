@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
+import java.net.URL;
 /**
  *
  * @author Dell-N7110
@@ -33,6 +34,7 @@ public class PhocosLink extends Application {
     public static String screen3File = "CXNPage.fxml";
     public static String screen4ID = "cxnsolidpage";
     public static String screen4File = "CXNsolidPage.fxml";
+    public static String styleSheet ="StyleSheet_CXlink.css";
     
     
     @Override
@@ -50,6 +52,8 @@ public class PhocosLink extends Application {
         Group root = new Group();
         root.getChildren().addAll(mainContainer);
         Scene scene = new Scene(root);
+        URL cssLocation = getClass().getResource(PhocosLink.styleSheet);
+        scene.getStylesheets().add(cssLocation.toString());
         primaryStage.setTitle("CXlink");
         
         //Checks that logo is properly loaded, then loads it
