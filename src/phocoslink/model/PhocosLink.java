@@ -59,6 +59,11 @@ public class PhocosLink extends Application {
         //Checks that logo is properly loaded, then loads it
         FileInputStream cxLinkLogo = null; 
         try {
+            cxLinkLogo = new FileInputStream(System.getProperty("user.dir") + "CXLINK-simple.png");
+        }   catch (FileNotFoundException ex)    {
+                System.out.println("FileNotFoundException caught");
+        }
+        try {
             cxLinkLogo = new FileInputStream(System.getProperty("user.dir") + "/src/phocoslink/images/CXLINK-simple.png");
         }   catch (FileNotFoundException ex)    {
                 System.out.println("FileNotFoundException caught");

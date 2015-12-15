@@ -111,7 +111,13 @@ public class CXNsolidDataDecryptor {
     public byte getCurrentYear(){return this.currentYear;}                   //
     public short getInverter(){return this.inverter;}                     // Example inverter = 24 AND 700W inverter => 24*70 =1680Wh 
     public int[][] getDayData(){return this.dayData;}  // Day will be first argument, and second will denote the data (31days by 19values)
-    public String[][] getDayDecoded(){return this.dayDecoded;}
+    public String[][] getDayDecoded(){
+//        int i = 0;
+//        int j = 0;
+//        String[][] tempDay;
+//        while (this.dayDecoded)
+        
+        return this.dayDecoded;}
     public int[][] getMonthData(){return this.monthData;}// Month will be first argument, and second will denote the data (24months by 19values)
     public String[][] getMonthDecoded(){return this.monthDecoded;}
     

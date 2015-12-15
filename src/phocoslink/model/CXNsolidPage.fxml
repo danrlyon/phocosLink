@@ -165,19 +165,15 @@
                   <StackPane fx:id="barChartStackPane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
                         <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <BarChart fx:id="batteryVoltages" focusTraversable="true" title="Battery Voltages" verticalGridLinesVisible="false">
-                                      <xAxis>
-                                        <CategoryAxis side="BOTTOM" />
-                                      </xAxis>
-                                      <yAxis>
-                                        <NumberAxis side="LEFT" />
-                                      </yAxis>
-                                    </BarChart>
-                                 </children>
-                              </AnchorPane>
+                          <content>                      
+                               <BarChart fx:id="batteryVoltages" focusTraversable="true" title="Battery Voltages" verticalGridLinesVisible="false" minHeight="0.0" minWidth="20000.0" prefHeight="200.0" prefWidth="20000.0">
+                                 <xAxis>
+                                   <CategoryAxis side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                   <NumberAxis side="LEFT" />
+                                 </yAxis>
+                               </BarChart>                     
                           </content>
                         </ScrollPane>
                      </children>

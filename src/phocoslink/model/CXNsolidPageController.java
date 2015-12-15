@@ -17,6 +17,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
@@ -24,12 +25,16 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -167,6 +172,8 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
     private int systemVoltage = 12;
     private String barChartScale = "day";
     private boolean isInitialized = false;
+    private String[][] storedDayData;
+    private String[][] storedMonthData;
       
 
     public CXNsolidPageController() {        
@@ -176,6 +183,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         this.xAxis.setLabel("Date");
         this.progressbar = new ProgressBar(0);
         System.out.println("initialized CXNsolid page controller");
+        
         
     }
 
@@ -392,28 +400,14 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 if(seriesCount==0) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][2]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][2]));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][2]));
                         i++;                        
                     }
                     series.setName("MAX");                  
                 }else if(seriesCount==1) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][3]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][3]));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][3]));
                         i++;
                     }
                     series.setName("MIN");
@@ -422,9 +416,10 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 }
                 seriesCount++;
             }
+            this.addBarChartHoverData();
         }));
         tl.setCycleCount(1);
-        tl.play();     
+        tl.play();    
     }
     
     @FXML
@@ -439,47 +434,33 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         final String[][] monthData = this.solidDecryptor.getMonthDecoded();
         Timeline tl = new Timeline();
         tl.getKeyFrames().add(new KeyFrame(Duration.millis(500), (ActionEvent actionEvent) -> {
-            int i=0;
-            int seriesCount=0;
-            this.batteryVoltages.setTitle("Amp Hours In and Out");        
-            this.yAxis.setLabel("Ah");
-            if (this.batteryVoltages.getData().size()==1) this.batteryVoltages.getData().add(this.displayedSeries2);
-            for (XYChart.Series<String, Number> series : this.batteryVoltages.getData()) {
-                if(seriesCount==0) {
-                    i=0;
-                    for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][4]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][4]));
-                            data.setXValue(monthData[i][0]);
-                        }
-                        i++;                        
-                    }
-                    series.setName("Charged");
-                    
-                }else if(seriesCount==1) {
-                    i=0;
-                    for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][5]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][5]));
-                            data.setXValue(monthData[i][0]);
-                        }
-                        i++;
-                    }
-                    series.setName("Discharged");
-                }else if(seriesCount>1) System.out.println("Too many series!");
-                seriesCount++;
-            }
-        }));
-        tl.setCycleCount(1);
-        tl.play();       
+        int i=0;
+        int seriesCount=0;
+        this.batteryVoltages.setTitle("Amp Hours In and Out");        
+        this.yAxis.setLabel("Ah");
+        if (this.batteryVoltages.getData().size()==1) this.batteryVoltages.getData().add(this.displayedSeries2);
+        for (XYChart.Series<String, Number> series : this.batteryVoltages.getData()) {
+            if(seriesCount==0) {
+                i=0;
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    data.setYValue(Float.parseFloat(dayData[i][4]));
+                    i++;                        
+                }
+                series.setName("Charged");     
+            }else if(seriesCount==1) {
+                i=0;
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    data.setYValue(Float.parseFloat(dayData[i][5]));
+                    i++;
+                }
+                series.setName("Discharged");
+            }else if(seriesCount>1) System.out.println("Too many series!");
+            seriesCount++;
+        }
+        this.addBarChartHoverData();
+    }));
+    tl.setCycleCount(1);
+    tl.play(); 
     }
     
     @FXML
@@ -503,28 +484,14 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 if(seriesCount==0) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][6]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][6]));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][6]));
                         i++;                        
                     }
                     series.setName("MAX");                  
                 }else if(seriesCount==1) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][7]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][7]));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][7]));
                         i++;
                     }
                     series.setName("MIN");
@@ -533,6 +500,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 }
                 seriesCount++;
             }
+            this.addBarChartHoverData();
         }));
         tl.setCycleCount(1);
         tl.play();
@@ -559,28 +527,14 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 if(seriesCount==0) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][8]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][8]));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][8]));
                         i++;                        
                     }
                     series.setName("Charge");                  
                 }else if(seriesCount==1) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][9]));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][9]));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][9]));
                         i++;
                     }
                     series.setName("Load");
@@ -589,6 +543,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 }
                 seriesCount++;
             }
+            this.addBarChartHoverData();
         }));
         tl.setCycleCount(1);
         tl.play();
@@ -602,6 +557,47 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         this.systemCurrentsButton.setStyle("-fx-font-weight:normal");
         this.morningSOCButton.setStyle("-fx-font-weight:bold");
         this.temperatureButton.setStyle("-fx-font-weight:normal");
+//        final String[][] dayData = this.solidDecryptor.getDayDecoded();
+//        final String[][] monthData = this.solidDecryptor.getMonthDecoded();
+//        Timeline tl = new Timeline();
+//        tl.getKeyFrames().add(new KeyFrame(Duration.millis(500), (ActionEvent actionEvent) -> {
+//            int i=0;
+//            int seriesCount=0;            
+//            this.batteryVoltages.setTitle("State of Charge Percentage");        
+//            this.yAxis.setLabel("%");       
+//            for (XYChart.Series<String, Number> series : this.batteryVoltages.getData()) {
+//                if(seriesCount==0) {
+//                    i=0;
+//                    for (XYChart.Data<String, Number> data : series.getData()) {                        
+//                        if(this.barChartScale.equals("day")){
+//                            data.setYValue(Float.parseFloat(dayData[i][10].replaceAll("%", "")));
+//                            data.setXValue(dayData[i][0]);
+//                        }
+//                        else if(this.barChartScale.equals("month")){
+//                            data.setYValue(Float.parseFloat(monthData[i][10].replaceAll("%", "")));
+//                            data.setXValue(monthData[i][0]);
+//                        }
+//                        i++;                        
+//                    }
+//                    series.setName("SOC");                  
+//                }else if(seriesCount==1) {
+//                    i=0;
+//                    for (XYChart.Data<String, Number> data : series.getData()) {
+//                        data.setYValue(0);
+//                        if(this.barChartScale.equals("day")){                            
+//                            data.setXValue(dayData[i][0]);
+//                        }
+//                        else if(this.barChartScale.equals("month")){
+//                            data.setXValue(monthData[i][0]);
+//                        }
+//                        i++;                        
+//                    }
+//                }else if(seriesCount>1)     {
+//                    System.out.println("Too many series!");
+//                }
+//                seriesCount++;
+//            }
+//            this.batteryVoltages.getData().remove(this.displayedSeries2.getData());
         final String[][] dayData = this.solidDecryptor.getDayDecoded();
         final String[][] monthData = this.solidDecryptor.getMonthDecoded();
         Timeline tl = new Timeline();
@@ -613,15 +609,8 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
             for (XYChart.Series<String, Number> series : this.batteryVoltages.getData()) {
                 if(seriesCount==0) {
                     i=0;
-                    for (XYChart.Data<String, Number> data : series.getData()) {                        
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][10].replaceAll("%", "")));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][10].replaceAll("%", "")));
-                            data.setXValue(monthData[i][0]);
-                        }
+                    for (XYChart.Data<String, Number> data : series.getData()) {
+                        data.setYValue(Float.parseFloat(dayData[i][10].replaceAll("%", "")));
                         i++;                        
                     }
                     series.setName("SOC");                  
@@ -629,12 +618,6 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
                         data.setYValue(0);
-                        if(this.barChartScale.equals("day")){                            
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setXValue(monthData[i][0]);
-                        }
                         i++;                        
                     }
                 }else if(seriesCount>1)     {
@@ -643,9 +626,10 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 seriesCount++;
             }
             this.batteryVoltages.getData().remove(this.displayedSeries2.getData());
+            this.addBarChartHoverData();
         }));        
         tl.setCycleCount(1);
-        tl.play();
+        tl.play();        
     }
     
     @FXML
@@ -669,38 +653,23 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 if(seriesCount==0) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][11].replaceAll("°C", "")));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][11].replaceAll("°C", "")));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][11].replaceAll("°C", "")));
                         i++;                        
                     }
-                    series.setName("MAX");                    
+                series.setName("MAX");                    
                 }else if(seriesCount==1) {
                     i=0;
                     for (XYChart.Data<String, Number> data : series.getData()) {
-                        if(this.barChartScale.equals("day")){
-                            data.setYValue(Float.parseFloat(dayData[i][12].replaceAll("°C", "")));
-                            data.setXValue(dayData[i][0]);
-                        }
-                        else if(this.barChartScale.equals("month")){
-                            data.setYValue(Float.parseFloat(monthData[i][12].replaceAll("°C", "")));
-                            data.setXValue(monthData[i][0]);
-                        }
+                        data.setYValue(Float.parseFloat(dayData[i][12].replaceAll("°C", "")));
                         i++;
                     }
                     series.setName("MIN");
                 }else if(seriesCount>1)     {
                     System.out.println("Too many series!");
-                }
-                
+                }         
                 seriesCount++;
             }
-            
+            this.addBarChartHoverData();
         }));
         tl.setCycleCount(1);
         tl.play();
@@ -742,6 +711,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         this.currentValuesButton.setStyle("-fx-font-weight:normal");
         this.dataLoggerButton.setStyle("-fx-font-weight:bold");
         this.newSettingsButton.setStyle("-fx-font-weight:normal");
+        this.batteryVoltageButton.setStyle("-fx-font-weight:bold");
         
         
         //Set each borderPane to proper opacity, then remove and reload in the proper order
@@ -828,8 +798,8 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         int temperature = 0;
         String menuState;
         byte menuStateByte = (byte) 0b111111111;
-        String[][] dayData = new String[31][15];
-        String[][] monthData = new String[24][15];
+        String[][] dayData;// = new String[31][15];
+        String[][] monthData;// = new String[24][15];
         if (!this.isInitialized){  
             try {  
                 this.solidDecryptor = new CXNsolidDataDecryptor();
@@ -868,34 +838,48 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                     Thread.currentThread().interrupt();
                 }
                 i++;
-            }                 
+            }
+            int position = 0;
             for (i=0;i<31;i++)  {
                if (!dayData[i][0].equals("200-0-0")&&!dayData[i][0].equals("200-1-1"))    {
+                    //this.storedDayData[position][0] = dayData[i][0]; 
                     this.batteryMaxSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][2])));
                     this.batteryMaxSeries.setName("Max");
+                    //this.storedDayData[position][2] = dayData[i][2];
     //                System.out.println(dayData[i][0]+Float.parseFloat(dayData[i][2]));
                     this.batteryMinSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][3])));
-                    this.batteryMinSeries.setName("Min");
+                    this.batteryMinSeries.setName("Min");                    
+                    //this.storedDayData[position][3] = dayData[i][3];
     //                System.out.println(dayData[i][0]+ Float.parseFloat(dayData[i][3]));
                     this.chargeAmpHoursSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][4])));
                     this.chargeAmpHoursSeries.setName("Charging");
+                    //this.storedDayData[position][4] = dayData[i][4];
     //                System.out.println(dayData[i][0]+ Float.parseFloat(dayData[i][4]));
                     this.loadAmpHoursSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][5])));
                     this.loadAmpHoursSeries.setName("Discharging");
+                    //this.storedDayData[position][5] = dayData[i][5];
                     this.pVMaxSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][6])));
                     this.pVMaxSeries.setName("Max");
+                    //this.storedDayData[position][6] = dayData[i][6];
                     this.pVMinSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][7])));
                     this.pVMinSeries.setName("Min");
+                    //this.storedDayData[position][7] = dayData[i][7];
                     this.maxLoadCurrentSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][8])));
                     this.maxLoadCurrentSeries.setName("Discharge");
+                    //this.storedDayData[position][8] = dayData[i][8];
                     this.maxChargeCurrentSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][9])));
                     this.maxChargeCurrentSeries.setName("Charge");
+                    //this.storedDayData[position][9] = dayData[i][9];
                     this.morningSOCSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][10].replace("%", ""))));
                     this.morningSOCSeries.setName("State of Charge");
+                    //this.storedDayData[position][10] = dayData[i][10];
                     this.maxExternalTempSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][11].replace("°C",""))));
                     this.maxExternalTempSeries.setName("Max");
+                    //this.storedDayData[position][11] = dayData[i][11];
                     this.minExternalTempSeries.getData().add(new XYChart.Data<>(dayData[i][0], Float.parseFloat(dayData[i][12].replace("°C",""))));
                     this.minExternalTempSeries.setName("Min");
+                    //this.storedDayData[position][12] = dayData[i][12];
+                    position++;
                 }            
             }
             for (i=0;i<24;i++)  {
@@ -954,7 +938,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
             }
             int chargeState = this.solidDecryptor.getChargeState();
             if ( (chargeState&1)==1 ) {
-                this.currentBatteryChargingState.setText("BOOST");
+                this.currentBatteryChargingState.setText("boost");
             }else if ( (chargeState&2)==2 ) {
                 this.currentBatteryChargingState.setText("EQUALIZE");
             }else if ( (chargeState&8)==8 ) {
@@ -973,10 +957,15 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
                 this.displayedSeries2.setName("MIN");
                 this.batteryVoltages.getData().addAll(this.displayedSeries1, this.displayedSeries2);
                 this.batteryVoltages.setTitle("Battery Voltages");        
-                this.yAxis.setLabel("Volts");
+                this.yAxis.setLabel("V");
                 this.yAxis.setAnimated(true);
                 this.xAxis.setLabel("Date");
                 this.xAxis.setAnimated(true);
+                                
+                this.addBarChartHoverData();
+                
+                
+                
                 this.isInitialized = true;
         } else  {
             //Load the Current Values
@@ -985,6 +974,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         this.progressbar.setProgress(100.0f);
         this.connectionStatusLabel.setText("Complete!");
         status = 52;
+        this.systemReadingsButton.setStyle("-fx-font-weight: bold");
         return status;      
     
     }
@@ -1085,6 +1075,16 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         tl.setCycleCount(1);
         tl.play();
         
+    }
+    
+    private void addBarChartHoverData() {
+        for (final Series<String, Number> series:this.batteryVoltages.getData())    {
+            for (final Data<String, Number> data : series.getData())    {
+                Tooltip tooltip = new Tooltip();
+                tooltip.setText(data.getYValue().toString());
+                Tooltip.install(data.getNode(), tooltip);
+            }
+        }
     }
         
 }
