@@ -1,2 +1,10 @@
 /build/
 /dist/
+/TestClasses/AnimatedBarGraphExample/build/
+/TestClasses/AnimatedBarGraphExample/dist/
+/TestClasses/AnimatedBarGraphExample/nbproject/private/
+/TestClasses/JavaFXTestDeploy/build/
+/TestClasses/JavaFXTestDeploy/dist/
+/TestClasses/JavaFXTestDeploy/nbproject/private/
+/TestClasses/PhocosSerialPortIdenitifier/build/
+/TestClasses/PhocosSerialPortIdenitifier/nbproject/private/

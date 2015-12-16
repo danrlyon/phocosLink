@@ -43,5 +43,22 @@ and open the template in the editor.
     -fx-font-weight: "normal";
 }
 
+.menu-button    {
+    -fx-background-color: #FFFFFF;
+}
 
+.menu-button > .arrow-button {
+    -fx-padding: 0;
+}
 
+.menu-button > .arrow-button > .arrow {
+    -fx-padding: 0;
+}
+
+.button {
+    
+}
+
+#dataloggerbutton   {
+    -fx-font-size: 10pt;
+}

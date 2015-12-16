@@ -39,6 +39,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import jssc.SerialPortException;
 /**
@@ -50,11 +51,11 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
             
     /*List of Buttons by fx:id*/
     @FXML private Button initialConnectButton;
-    @FXML private Button currentValuesButton; 
-    @FXML private Button dataLoggerButton;
-    @FXML private Button newSettingsButton;
-    @FXML private Button systemReadingsButton;
-    @FXML private Button systemSettingsButton;
+//    @FXML private Button currentValuesButton; 
+//    @FXML private Button dataLoggerButton;
+//    @FXML private Button newSettingsButton;
+//    @FXML private Button systemReadingsButton;
+//    @FXML private Button systemSettingsButton;
     @FXML private Button currentRefresh;
     @FXML private Button dataDayButton;
     @FXML private Button dataWeekButton;
@@ -124,6 +125,9 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
     /*List of AnchorPane by fx:id*/
     @FXML private AnchorPane initialScreenAnchorPane;
     
+    /*List of Vbox by fx:id*/
+//    @FXML private VBox leftVbox;
+    
     /*List of Line Charts by fx:id*/    
     @FXML private final BarChart<String, Number> batteryVoltages;
     
@@ -185,6 +189,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         System.out.println("initialized CXNsolid page controller");
         
         
+        
     }
 
     /**
@@ -195,14 +200,14 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
     @Override
     public void initialize(URL url, ResourceBundle rb) 
     {        
-        this.currentValuesButton.setStyle("-fx-font-weight: bold");
-        this.systemReadingsButton.setStyle("-fx-font-weight: bold");
-        this.dataDayButton.setStyle("-fx-font-weight: bold");
+//        this.currentValuesButton.setStyle("-fx-font-weight: bold");
+//        this.systemReadingsButton.setStyle("-fx-font-weight: bold");
+//        this.dataDayButton.setStyle("-fx-font-weight: bold");
         this.dataLoggerBorderPane.setOpacity(0);
         this.newSettingsBorderPane.setOpacity(0);
-        this.systemSettingsGridPane.setOpacity(0);
         this.currentValuesBorderPane.setOpacity(0);
-         this.barChartScale="day";
+        this.menuButton.setOpacity(0);
+        this.barChartScale="day";
     }
     
     /**
@@ -230,37 +235,37 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         myController.setScreen(PhocosLink.screen1ID);
     }
     
-    @FXML
-    private void handleSystemReadingsSelect(ActionEvent event) throws SerialPortException, UnsupportedEncodingException  {
-        this.currentValuesButton.setStyle("-fx-font-weight:bold");
-        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
-        this.newSettingsButton.setStyle("-fx-font-weight:normal");        
-        this.systemReadingsButton.setStyle("-fx-font-weight:bold");
-        this.systemSettingsButton.setStyle("-fx-font-weight:normal");
-        
-        //Set each borderPane to proper opacity, then remove and reload in the proper order
-        //Optimize in the future 
-        this.systemReadingsGridPane.setOpacity(1);
-        this.systemSettingsGridPane.setOpacity(0);
-        this.currentValuesStackPane.getChildren().remove(0, 1);
-        this.currentValuesStackPane.getChildren().setAll(this.systemSettingsGridPane, this.systemReadingsGridPane);
-    }
-    
-    @FXML
-    private void handleSystemSettingsSelect(ActionEvent event) throws SerialPortException, UnsupportedEncodingException  {
-        this.currentValuesButton.setStyle("-fx-font-weight:bold");
-        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
-        this.newSettingsButton.setStyle("-fx-font-weight:normal");        
-        this.systemReadingsButton.setStyle("-fx-font-weight:normal");
-        this.systemSettingsButton.setStyle("-fx-font-weight:bold");
-        
-        //Set each borderPane to proper opacity, then remove and reload in the proper order
-        //Optimize in the future    
-        this.systemReadingsGridPane.setOpacity(0);
-        this.systemSettingsGridPane.setOpacity(1);
-        this.currentValuesStackPane.getChildren().remove(0, 1);
-        this.currentValuesStackPane.getChildren().setAll(this.systemReadingsGridPane, this.systemSettingsGridPane);
-    }    
+//    @FXML
+//    private void handleSystemReadingsSelect(ActionEvent event) throws SerialPortException, UnsupportedEncodingException  {
+////        this.currentValuesButton.setStyle("-fx-font-weight:bold");
+////        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
+////        this.newSettingsButton.setStyle("-fx-font-weight:normal");        
+////        this.systemReadingsButton.setStyle("-fx-font-weight:bold");
+////        this.systemSettingsButton.setStyle("-fx-font-weight:normal");
+//        
+//        //Set each borderPane to proper opacity, then remove and reload in the proper order
+//        //Optimize in the future 
+//        this.systemReadingsGridPane.setOpacity(1);
+//        this.systemSettingsGridPane.setOpacity(1);
+//        this.currentValuesStackPane.getChildren().remove(0, 1);
+//        this.currentValuesStackPane.getChildren().setAll(this.systemSettingsGridPane, this.systemReadingsGridPane);
+//    }
+//    
+//    @FXML
+//    private void handleSystemSettingsSelect(ActionEvent event) throws SerialPortException, UnsupportedEncodingException  {
+////        this.currentValuesButton.setStyle("-fx-font-weight:bold");
+////        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
+////        this.newSettingsButton.setStyle("-fx-font-weight:normal");        
+////        this.systemReadingsButton.setStyle("-fx-font-weight:normal");
+////        this.systemSettingsButton.setStyle("-fx-font-weight:bold");
+//        
+//        //Set each borderPane to proper opacity, then remove and reload in the proper order
+//        //Optimize in the future    
+//        this.systemReadingsGridPane.setOpacity(1);
+//        this.systemSettingsGridPane.setOpacity(1);
+//        this.currentValuesStackPane.getChildren().remove(0, 1);
+//        this.currentValuesStackPane.getChildren().setAll(this.systemReadingsGridPane, this.systemSettingsGridPane);
+//    }    
     
     @FXML
     private void handleDataDaySelect(ActionEvent event) throws SerialPortException, UnsupportedEncodingException  {
@@ -689,11 +694,11 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
     @FXML
     private void handleCurrentValuesSelect(ActionEvent event) throws SerialPortException, UnsupportedEncodingException  {
         //Set selected button to bold
-        this.currentValuesButton.setStyle("-fx-font-weight:bold");
-        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
-        this.newSettingsButton.setStyle("-fx-font-weight:normal");        
-        this.systemReadingsButton.setStyle("-fx-font-weight:bold");
-        this.systemSettingsButton.setStyle("-fx-font-weight:normal");
+//        this.currentValuesButton.setStyle("-fx-font-weight:bold");
+//        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
+//        this.newSettingsButton.setStyle("-fx-font-weight:normal");        
+//        this.systemReadingsButton.setStyle("-fx-font-weight:bold");
+//        this.systemSettingsButton.setStyle("-fx-font-weight:normal");
         
         //Set each borderPane to proper opacity, then remove and reload in the proper order
         //Optimize in the future
@@ -708,9 +713,9 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
     @FXML
     private void handleDataLoggerSelect(ActionEvent event)   {        
         //Set Selected buttons to bold
-        this.currentValuesButton.setStyle("-fx-font-weight:normal");
-        this.dataLoggerButton.setStyle("-fx-font-weight:bold");
-        this.newSettingsButton.setStyle("-fx-font-weight:normal");
+//        this.currentValuesButton.setStyle("-fx-font-weight:normal");
+//        this.dataLoggerButton.setStyle("-fx-font-weight:bold");
+//        this.newSettingsButton.setStyle("-fx-font-weight:normal");
         this.batteryVoltageButton.setStyle("-fx-font-weight:bold");
         
         
@@ -733,9 +738,9 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
     @FXML
     private void handleNewSettingsSelect(ActionEvent event)   {
         //Set selected buttons to bold
-        this.currentValuesButton.setStyle("-fx-font-weight:normal");
-        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
-        this.newSettingsButton.setStyle("-fx-font-weight:bold");
+//        this.currentValuesButton.setStyle("-fx-font-weight:normal");
+//        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
+//        this.newSettingsButton.setStyle("-fx-font-weight:bold");
         
         //Set each borderPane to proper opacity, then remove and reload in the proper order
         //Optimize in the future
@@ -750,31 +755,45 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
     @FXML
     private void handleInitialConnectSelect(ActionEvent event)   {
         if (loadAllData()==52)  {
+            if( !this.barChartStackPane.getChildren().isEmpty() ) {
+            this.barChartStackPane.getChildren().removeAll();
+            }         
+            this.barChartStackPane.getChildren().setAll(this.batteryVoltages);
             FadeTransition ftout = new FadeTransition(Duration.millis(3000), this.initialScreenAnchorPane);
             ftout.setFromValue(1.0);
             ftout.setToValue(0.0);
             ftout.setCycleCount(1);
             ftout.play();
-            this.initialScreenAnchorPane.setOpacity(0);
-            FadeTransition ftin = new FadeTransition(Duration.millis(3000), this.currentValuesBorderPane);
-            ftin.setFromValue(0.0);
-            ftin.setToValue(1.0);
-            ftin.setCycleCount(1);
-            ftin.play();
+            //this.initialScreenAnchorPane.setOpacity(0);
+            FadeTransition ftinBorderPane = new FadeTransition(Duration.millis(3000), this.dataLoggerBorderPane);
+            ftinBorderPane.setFromValue(0.0);
+            ftinBorderPane.setToValue(1.0);
+            ftinBorderPane.setCycleCount(1);
+            ftinBorderPane.play();
+//            FadeTransition ftinLeftVbox = new FadeTransition(Duration.millis(3000), this.currentValuesBorderPane);
+//            ftinLeftVbox.setFromValue(0.0);
+//            ftinLeftVbox.setToValue(1.0);
+//            ftinLeftVbox.setCycleCount(1);
+//            ftinLeftVbox.play();
+            FadeTransition ftinMenuButton = new FadeTransition(Duration.millis(3000), this.menuButton);
+            ftinMenuButton.setFromValue(0.0);
+            ftinMenuButton.setToValue(1.0);
+            ftinMenuButton.setCycleCount(1);
+            ftinMenuButton.play();
         }
         //Set selected buttons to bold
-        this.currentValuesButton.setStyle("-fx-font-weight:bold");
-        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
-        this.newSettingsButton.setStyle("-fx-font-weight:normal");
+//        this.currentValuesButton.setStyle("-fx-font-weight:bold");
+//        this.dataLoggerButton.setStyle("-fx-font-weight:normal");
+//        this.newSettingsButton.setStyle("-fx-font-weight:normal");
         
         //Set each borderPane to proper opacity, then remove and reload in the proper order
         //Optimize in the future
         this.initialScreenAnchorPane.setOpacity(0);
-        this.currentValuesBorderPane.setOpacity(1);
+        this.currentValuesBorderPane.setOpacity(0);
         this.newSettingsBorderPane.setOpacity(0);    
-        this.dataLoggerBorderPane.setOpacity(0);
+        this.dataLoggerBorderPane.setOpacity(1);
         this.cxPageStackPane.getChildren().remove(0, (this.cxPageStackPane.getChildren().size()-1));
-        this.cxPageStackPane.getChildren().setAll(this.dataLoggerBorderPane, this.newSettingsBorderPane, this.currentValuesBorderPane);
+        this.cxPageStackPane.getChildren().setAll(this.newSettingsBorderPane, this.currentValuesBorderPane, this.dataLoggerBorderPane);
         
     }
      private int loadAllData(){
@@ -783,8 +802,8 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         this.connectionStatusLabel.setText("Starting Connection");
         this.dataMonthButton.setStyle("-fx-font-weight:normal");
         this.dataDayButton.setStyle("-fx-font-weight:bold");
-        this.systemReadingsButton.setStyle("-fx-font-weight:bold");
-        this.systemReadingsButton.setStyle("-fx-font-weight:normal");
+//        this.systemReadingsButton.setStyle("-fx-font-weight:bold");
+//        this.systemReadingsButton.setStyle("-fx-font-weight:normal");
         this.barChartScale = "day";
         float batteryVoltage;
         int stateOfCharge = 0;
@@ -974,7 +993,7 @@ public class CXNsolidPageController implements Initializable, ControlledScreen {
         this.progressbar.setProgress(100.0f);
         this.connectionStatusLabel.setText("Complete!");
         status = 52;
-        this.systemReadingsButton.setStyle("-fx-font-weight: bold");
+//        this.systemReadingsButton.setStyle("-fx-font-weight: bold");
         return status;      
     
     }
