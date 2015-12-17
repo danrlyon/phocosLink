@@ -121,6 +121,7 @@ public final class CXCom {
         catch (SerialPortException ex) {
             System.out.println(ex);
         }
+        System.out.println(cxDataLogger);
     }
     
     public void setBaudRate(int baudTemp)   {

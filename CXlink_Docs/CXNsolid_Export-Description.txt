@@ -1,0 +1,19 @@
+/*Software Subsystems:
+*********************/
+
+
+/*IR Communication*/
+
+
+/*MPPT Algorithm*/
+
+
+/*Data logger*/
+
+
+/*Calibration Setup*/
+
+
+
+
+
