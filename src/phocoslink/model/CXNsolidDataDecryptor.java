@@ -99,8 +99,7 @@ public class CXNsolidDataDecryptor {
         }
     }
     
-    public int numberLVDDays(){return this.numberLVDDays;}//Number of days with LVD (2bytes)
-    
+    public int numberLVDDays(){return this.numberLVDDays;}//Number of days with LVD (2bytes)    
     public int getNumberMonthsNoFullCharge(){return this.numberMonthsNoFullCharge;}     //Number of months without a full charge (1byte) ?Consecutive?
     public int getSumMorningSOCs(){return this.sumMorningSOCs;}                 //Sum of SOCs in the morning (2bytes) ?all SOCs?
     public long getAhCharge(){return this.ahCharge;}                      //Total amp hours charging  (4bytes)
@@ -112,7 +111,13 @@ public class CXNsolidDataDecryptor {
     public byte getCurrentYear(){return this.currentYear;}                   //
     public short getInverter(){return this.inverter;}                     // Example inverter = 24 AND 700W inverter => 24*70 =1680Wh 
     public int[][] getDayData(){return this.dayData;}  // Day will be first argument, and second will denote the data (31days by 19values)
-    public String[][] getDayDecoded(){return this.dayDecoded;}
+    public String[][] getDayDecoded(){
+//        int i = 0;
+//        int j = 0;
+//        String[][] tempDay;
+//        while (this.dayDecoded)
+        
+        return this.dayDecoded;}
     public int[][] getMonthData(){return this.monthData;}// Month will be first argument, and second will denote the data (24months by 19values)
     public String[][] getMonthDecoded(){return this.monthDecoded;}
     
@@ -184,7 +189,8 @@ public class CXNsolidDataDecryptor {
         //Parse and store data in a readable format
         String replace = this.cxDataLogger.replace("!", " ");
         String trim = replace.trim();
-        String[] splitDataLogger = trim.split(";");        
+        String[] splitDataLogger = trim.split(";");   
+        System.out.println(splitDataLogger.length+"\n");
         int i;        
         this.numberLVDDays = Integer.parseInt("0000"
                 +splitDataLogger[128]+splitDataLogger[129], 16);
@@ -267,16 +273,10 @@ public class CXNsolidDataDecryptor {
             this.dayData[i][14] = Integer.parseInt("0000"+splitDataLogger[161+(i*19)]
                     +splitDataLogger[162+(i*19)], 16); 
             this.dayDecoded[i][14] = Integer.toBinaryString(this.dayData[i][14]);
-            /*If manual system voltage is required, uncomment and test below, and add to month data*/
-//            if((1024&this.dayData[i][14])==1024)   {
-//                this.dayDecoded[i][2] = String.valueOf(Integer.parseInt(this.dayDecoded[i][2])*24);
-//                this.dayDecoded[i][3] = String.valueOf(Integer.parseInt(this.dayDecoded[i][2])*24);
-//                
-//            }
+            
         }
         //Monthly Datalogger values be decyphered
         for ( i=0;i<24;i++ )    {
-            //Loads Date into monthDecoded string array
             this.monthData[i][0] = Integer.parseInt("0000"+splitDataLogger[144+(i*19)]
                     +splitDataLogger[145+(i*19)], 16);
             this.currentYear = (byte) (this.monthData[i][0]&127);
@@ -355,6 +355,8 @@ public class CXNsolidDataDecryptor {
         
         System.out.println(Arrays.toString(dayData[0]));
         System.out.println(Arrays.toString(this.dayDecoded[0]));
+        System.out.println(Arrays.toString(monthData[0]));
+        System.out.println(Arrays.toString(this.monthDecoded[0]));
 //        System.out.println(Arrays.toString(monthData[0]));
     }    
     
